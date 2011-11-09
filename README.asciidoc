@@ -1,0 +1,120 @@
+= LOB and Bytea in PostgreSQL
+
+This is an application that shows how to work with Bytea and LOBs in C and Java.
+Other languages version may arrive soon.
+
+== The C program
+
+C version of the program can be found in +C+ directory, compile it with +make+:
+
+----
+$ cd C
+$ make
+----
+
+then launch the program with:
+
+----
+$ ./lotest DSN COMMAND # Read below for detailed instructions
+----
+
+
+== The Java program
+
+To install the Java version of the program you need +Maven+.+
+Assuming that it is installed and it is present in the binary path, change to the java directory:
+
+----
+$ cd java
+----
+
+And run +Maven+:
+
+----
+$ mvn assembly:assembly
+----
+
+Wait until building process finish.
+You can find resulting jar files in the +target+ directory, in particular:
+
+----
+$ ls target/*.jar
+target/lotest-1.0-SNAPSHOT.jar target/lotest-1.0-SNAPSHOT-jar-with-dependencies.jar
+----
+
+Launch the "with-dependencies" one with:
+
+----
+$ cd target
+$ java -jar lotest-1.0-SNAPSHOT-jar-with-dependencies.jar
+----
+
+== Usage
+
+Both versions of this program (C and Java) have the same usage interface:
+
+----
+Usage:
+ ./lotest DSN lob {import|export|remove}
+ ./lotest DSN bytea {import|export|remove}
+ ./lotest DSN list
+
+Command help:
+ DSN lob import <filename>
+   This command imports <filename> as LOB, and returns its oid
+
+ DSN lob export <oid> <filename>
+   This command exports LOB <oid> as <filename>.
+   You can view OIDs actually in the catalog with list command
+
+ DSN lob remove <oid>
+   This command removes LOB <oid> from Postgres.
+   You can view OIDs actually in the catalog with list command
+
+ DSN bytea import <oid>
+   This command imports <filename> as a BYTEA.
+
+ DSN bytea export <oid>
+   This command exports bytea <oid> as <filename>.
+   You can view OIDs actually in the catalog with list command
+
+ DSN bytea remove <oid>
+   This command removes BYTEA <oid>.
+   You can view OIDs actually in the catalog with list command
+
+ DSN list
+   This command shows the actual catalogue.
+----
+
+That's easy. +
+The +DSN+ argument may require some explanation. +
+
++DSN+ stand for *Database Source Name* and it is the string that +lotest+ will use to connect to your Postgres instance. +
+The +DSN+ string contains information about _host_, _port_, _user_ and _database name_. +
+
+For example, this is a valid DSN to be used with C version of this program:
+
+----
+"host=localhost dbname=postgres user=postgres port=5432"
+----
+
+This one is for the Java version:
+
+----
+127.0.0.1:5432/dbname,username,password
+----
+
+Change parameters to suit your needs.
+
+== Credits
+
+=== Authors
+
+* Carlo Ascani <Carlo.Ascani@2ndQuadrant.it>
+* Giulio Calacoci <Giulio.Calacoci@2ndQuadrant.it>
+
+===  License
+GPL v3 or later
+
+=== Copyright
+© 2011 2ndQuadrant Italia <info@2ndquadrant.it>
