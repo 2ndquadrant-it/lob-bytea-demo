@@ -158,7 +158,7 @@ int main(int argc, char **argv)
         {
 			check_int(argv[optind++]);
         }else{
-			fprintf(stderr, "ERROR: You must specify the oid to remove.\n");
+			fprintf(stderr, "ERROR: You must specify the id to remove.\n");
             exit(ERR_BAD_CONFIG);
 		}
     }
@@ -220,7 +220,7 @@ void usage()
 	fprintf(stderr, "   This command exports LOB <oid> as <filename>.\n");
 	fprintf(stderr, "   You can view OIDs actually in the catalog with list command\n\n");
 	fprintf(stderr, " DSN lob remove <oid> \n");
-	fprintf(stderr, "   This command removes LOB <oid> from Postgres.\n   You can view OIDs actually in the catalog with list command\n\n");
+	fprintf(stderr, "   This command removes LOB <id> from Postgres.\n   You can view IDs actually in the catalog with list command\n\n");
 	fprintf(stderr, " DSN bytea import <oid> \n");
 	fprintf(stderr, "   This command imports <filename> as a BYTEA.\n\n");
 	fprintf(stderr, " DSN bytea export <oid> \n");
