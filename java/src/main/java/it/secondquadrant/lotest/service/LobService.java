@@ -49,10 +49,9 @@ public class LobService extends BaseService implements ServiceInterface {
             FileInputStream fis = new FileInputStream(file);
 
             byte buf[] = new byte[2048];
-            int s, tl = 0;
+            int s;
             while ((s = fis.read(buf, 0, 2048)) > 0) {
                 obj.write(buf, 0, s);
-                tl += s;
             }
 
             obj.close();
@@ -84,17 +83,20 @@ public class LobService extends BaseService implements ServiceInterface {
             PreparedStatement ps = conn.prepareStatement("SELECT objid FROM audio_catalog WHERE id = ?");
             ps.setLong(1, oid.longValue());
             ResultSet rs = ps.executeQuery();
+            Long exportoid = null;
             while (rs.next()) {
-                Long exportoid = rs.getLong(1);
-                LargeObject obj = lobj.open(exportoid, LargeObjectManager.READ);
-
-                byte buf[] = new byte[obj.size()];
-                obj.read(buf, 0, obj.size());
-                FileOutputStream fos = new FileOutputStream(filename);
-                fos.write(buf);
-                fos.close();
-                obj.close();
+                exportoid = rs.getLong(1);
             }
+            LargeObject obj = lobj.open(exportoid, LargeObjectManager.READ);
+
+            FileOutputStream fos = new FileOutputStream(filename);
+            byte buf[] = new byte[2048];
+            int s;
+            while ((s = obj.read(buf, 0, 2048)) > 0) {
+                fos.write(buf, 0, s);
+            }
+            fos.close();
+            obj.close();
             rs.close();
             ps.close();
 

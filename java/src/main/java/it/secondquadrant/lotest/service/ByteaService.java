@@ -21,6 +21,7 @@ import it.secondquadrant.lotest.interfaces.ServiceInterface;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class ByteaService extends BaseService implements ServiceInterface {
             Logger.getLogger(ByteaService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        throw new Exception("Insert Bitea field failed");
+        throw new Exception("Insert Bytea field failed");
     }
 
     public void exportFile(String dsn, BigInteger oid, String filename) {
@@ -61,13 +62,18 @@ public class ByteaService extends BaseService implements ServiceInterface {
             PreparedStatement ps = conn.prepareStatement("SELECT therealdata FROM audio_catalog WHERE id = ?");
             ps.setLong(1, oid.longValue());
             ResultSet rs = ps.executeQuery();
-            byte[] imgBytes = null;
+            InputStream bs = null;
             while (rs.next()) {
-                imgBytes = rs.getBytes(1);
+                bs = rs.getBinaryStream(1);
             }
-            FileOutputStream fos = new FileOutputStream("/tmp/tmp2.jpg");
-            fos.write(imgBytes);
+            FileOutputStream fos = new FileOutputStream(filename);
+            byte buf[] = new byte[2048];
+            int s;
+            while ((s = bs.read(buf, 0, 2048)) > 0) {
+                fos.write(buf, 0, s);
+            }
             fos.close();
+            bs.close();
             rs.close();
             ps.close();
         } catch (Exception ex) {
