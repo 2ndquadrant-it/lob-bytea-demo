@@ -41,6 +41,10 @@ public class BaseService {
             String pwd = (cstring.length < 3) ? "" : cstring[2];
             con = DriverManager.getConnection("jdbc:postgresql://" + cstring[0], cstring[1], pwd);
             System.out.println("DSN Connection ok.");
+        } catch (Exception e) {
+            throw new Exception("Unable To connect");
+        }
+        try {
             PreparedStatement ps = con.prepareStatement("CREATE TABLE audio_catalog ( "
                     + " id SERIAL,     "
                     + " filename TEXT, "
@@ -49,10 +53,7 @@ public class BaseService {
                     + " objid oid )");
             ps.execute();
             ps.close();
-
-        } catch (Exception e) {
-            throw new Exception("Unable To connect");
-        }
+        } catch (Exception e){}
         return con;
     }
     /**
@@ -62,7 +63,6 @@ public class BaseService {
      */
     protected void listObjects(String dsn) throws Exception {
         Connection conn = this.openConnection(dsn);
-        int i;
         PreparedStatement ps = conn.prepareStatement("SELECT id,mode,filename FROM audio_catalog");
         ResultSet rs = ps.executeQuery();
 
